@@ -1,0 +1,7 @@
+sudo npm install
+sudo pip3 install tensorflowjs
+
+to run server use:
+>> node server.js
+
+
