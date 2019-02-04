@@ -24,6 +24,7 @@ from keras.callbacks import History
 #Import the 2 datasets provided in the Zip Folder
 df = pd.read_csv("/home/chrisxt/Documents/MachineLearning/keras/datasets/predicting-red-hat-business-value/act_train.csv")
 people = pd.read_csv("/home/chrisxt/Documents/MachineLearning/keras/datasets/predicting-red-hat-business-value/people.csv")
+#Data was anonymized
 #----------------------------------------------------------------------------------------------------------------
 
 #----------------------------------------------------------------------------------------------------------------
@@ -33,63 +34,226 @@ print("Shape of People DF:",people.shape)
 #----------------------------------------------------------------------------------------------------------------
 
 #----------------------------------------------------------------------------------------------------------------
-
+#Explore the contents of the first dataset
+df.head()
 #----------------------------------------------------------------------------------------------------------------
 
 #----------------------------------------------------------------------------------------------------------------
-
+#Calculating the % of Null values in each column for activity data
+df.isnull().sum()/df.shape[0]
 #----------------------------------------------------------------------------------------------------------------
 
 #----------------------------------------------------------------------------------------------------------------
-
+#Explore the contents of People dataset
+a=people.head()
+print(a)
 #----------------------------------------------------------------------------------------------------------------
 
 #----------------------------------------------------------------------------------------------------------------
-
+#Calculate the % of null values in for the entire dataset
+people.isnull().sum().sum()
+#>>Output: 0
+#We see that none of the columns in the customer dataset has missing values.
 #----------------------------------------------------------------------------------------------------------------
 
 #----------------------------------------------------------------------------------------------------------------
+#We need to drop the columns in the activity data that have 90% missing values, as they cannot be fixed.
 
+#Create the list of columns to drop from activity data
+columns_to_remove = ["char_"+str(x) for x in  np.arange(1,10)]
+print("Columns to remove:",columns_to_remove)
+
+#Remove the columns from the activity data
+df = df[list(set(df.columns) - set(columns_to_remove))]
+
+#Rename the 2 columns to avoid name clashes in merged data
+df = df.rename(columns={"date":"activity_date","char_10":"activity_type"})
+
+#Replace nulls in the activity_type column with the mode
+df["activity_type"] = df["activity_type"].fillna(df["activity_type"].mode()[0])
 #----------------------------------------------------------------------------------------------------------------
 
 #----------------------------------------------------------------------------------------------------------------
-
+#Print the shape of the final activity dataset
+print("Shape of DF:",df.shape)
+#Output:
+#Columns to remove: ['char_1', 'char_2', 'char_3', 'char_4','char_5', 'char_6', 'char_7', 'char_8', 'char_9']
+#Shape of DF: (2197291, 6)
 #----------------------------------------------------------------------------------------------------------------
 
 #----------------------------------------------------------------------------------------------------------------
+#Merge the 2 datasets on 'people_id' key
+df_new = df.merge(people,on=["people_id"],how="inner")
+print("Shape before merging:",df.shape)
+print("Shape after merging :",df_new.shape)
 
+#Output
+#Shape before merging: (2197291, 6)
+#Shape after merging : (2197291, 46)
 #----------------------------------------------------------------------------------------------------------------
 
 #----------------------------------------------------------------------------------------------------------------
-
+#Look at new data
+a=df_new.head()
+print(a)
 #----------------------------------------------------------------------------------------------------------------
 
 #----------------------------------------------------------------------------------------------------------------
+print("Unique values for outcome:",df_new["outcome"].unique())
+print("\nPercentage of distribution for outcome-")
+print(df_new["outcome"].value_counts()/df_new.shape[0])
 
+#Outcome
+#Unique values for outcome: [0 1]
+#Percentage of distribution for outcome-
+#0    0.556046
+#1    0.443954
+#Name: outcome, dtype: float64
 #----------------------------------------------------------------------------------------------------------------
 
 #----------------------------------------------------------------------------------------------------------------
+#Checking the distinct datatypes in the dataset
+print("Distinct DataTypes:",list(df_new.dtypes.unique()))
 
+
+#Output
+#Distinct DataTypes: [dtype('int64'), dtype('O'), dtype('bool')]
 #----------------------------------------------------------------------------------------------------------------
 
 #----------------------------------------------------------------------------------------------------------------
+#Create a temp dataset with the datatype of columns
+temp = pd.DataFrame(df_new.dtypes)
+temp.columns = ["DataType"]
 
+#Create a list with names of all Boolean columns
+boolean_columns = temp.index[temp["DataType"] == 'bool'].values
+print("Boolean columns - \n",boolean_columns)
+
+#Convert all boolean columns to Binary numeric values
+for column in boolean_columns:
+    df_new[column] = np.where(df_new[column] == True,1,0)
+    
+print("\nDistinct DataTypes after processing:",df.dtypes.unique())
+
+#Output
+#Boolean columns -
+#['char_10"char_11"char_12"char_13"char_14"char_15"char_16'
+#'char_17"char_18"char_19"char_20"char_21"char_22"char_23'
+#'char_24"char_25"char_26"char_27"char_28"char_29"char_30'
+#'char_31"char_32"char_33"char_34"char_35"char_36"char_37']
+#Distinct DataTypes after processing: [dtype('int64')
+#dtype('O')]
 #----------------------------------------------------------------------------------------------------------------
 
 #----------------------------------------------------------------------------------------------------------------
+#categorical features
+#If there are categorical features where there are unusually high numbers of distinct values, we have to decide
+#if we can  really convert them to a one-hot encoded structure for further processing.
+    
+#Extracting the object columns from the above dataframe
+categorical_columns = temp.index[temp["DataType"] == 'O'].values
 
+#Check the number of distinct values in each categorical column
+for column in categorical_columns:
+    print(column+" column has :",str(len(df_new[column].unique()))+" distinct values")
+    
+#Output
+#activity_type column has : 6515 distinct values <- Too many categories
+#activity_id column has : 2197291 distinct values <- Too many categories
+#activity_category column has : 7 distinct values
+#activity_date column has : 411 distinct values <- Dates
+#people_id column has : 151295 distinct values <- Too many categories
+#char_1 column has : 2 distinct values
+#group_1 column has : 29899 distinct values <- Too many categories
+#char_2 column has : 3 distinct values
+#date column has : 1196 distinct values <- Dates
+#char_3 column has : 43 distinct values
+#char_4 column has : 25 distinct values
+#char_5 column has : 9 distinct values
+#char_6 column has : 7 distinct values
+#char_7 column has : 25 distinct values
+#char_8 column has : 8 distinct values
+#char_9 column has : 9 distinct values
 #----------------------------------------------------------------------------------------------------------------
 
 #----------------------------------------------------------------------------------------------------------------
+#Convert the date values to new features and then delete the actual column
 
+#Create date related features for 'date' in customer data
+df_new["date"] = pd.to_datetime(df_new["date"])
+df_new["Year"] = df_new["date"].dt.year
+df_new["Month"] = df_new["date"].dt.month
+df_new["Quarter"] = df_new["date"].dt.quarter
+df_new["Week"] = df_new["date"].dt.week
+df_new["WeekDay"] = df_new["date"].dt.weekday
+df_new["Day"] = df_new["date"].dt.day
+
+#Create date related features for 'date' in activity data
+df_new["activity_date"] = pd.to_datetime(df_new["activity_date"])
+df_new["Activity_Year"] = df_new["activity_date"].dt.year
+df_new["Activity_Month"] = df_new["activity_date"].dt.month
+df_new["Activity_Quarter"] = df_new["activity_date"].dt.quarter
+df_new["Activity_Week"] = df_new["activity_date"].dt.week
+df_new["Activity_WeekDay"] = df_new["activity_date"].dt.weekday
+df_new["Activity_Day"] = df_new["activity_date"].dt.day
+
+#Delete the original date columns
+del(df_new["date"])
+del(df_new["activity_date"])
+print("Shape of data after create Date Features:",df_new.shape)
+
+#Output
+#Shape of data after create Date Features: (2197291, 56)
 #----------------------------------------------------------------------------------------------------------------
 
 #----------------------------------------------------------------------------------------------------------------
+#Let us now have a look at the remaining categorical columns, which have very high numbers of distinct values.
 
+print(df_new[["people_id","activity_type","activity_id","group_1"]].head())
+
+#Output
+#people_id activity_type   activity_id      group_1
+#0   ppl_100       type 76  act2_1734928  group 17304
+#1   ppl_100        type 1  act2_2434093  group 17304
+#2   ppl_100        type 1  act2_3404049  group 17304
+#3   ppl_100        type 1  act2_3651215  group 17304
+#4   ppl_100        type 1  act2_4109017  group 17304
+
+#It seems that we can convert all of the preceding categorical columns into numeric by extracting the relevant
+#numeric ID from each of them, since each of these columns has values in the form of someText_someNumber.
 #----------------------------------------------------------------------------------------------------------------
 
 #----------------------------------------------------------------------------------------------------------------
+#Transform categorical variables into numeric variables for the cases where thera are too many categories.
 
+#The following code snippet extracts the numeric portion of the columns and converts the columns from a string 
+#to a numeric feature. For people ID, we would need to extract values after '_'
+
+df_new.people_id = df_new.people_id.apply(lambda x:x.split("_")[1])
+df_new.people_id = pd.to_numeric(df_new.people_id)
+
+#For activity ID also, we would need to extract values after '_'
+df_new.activity_id = df_new.activity_id.apply(lambda x:x.split("_")[1])
+df_new.activity_id = pd.to_numeric(df_new.activity_id)
+
+#For group_1 , we would need to extract values after " "
+df_new.group_1 = df_new.group_1.apply(lambda x:x.split(" ")[1])
+df_new.group_1 = pd.to_numeric(df_new.group_1)
+
+#For activity_type , we would need to extract values after " "
+df_new.activity_type = df_new.activity_type.apply(lambda x:x.split(" ")[1])
+df_new.activity_type = pd.to_numeric(df_new.activity_type)
+
+#Double check the new values in the dataframe
+print(df_new[["people_id","activity_type","activity_id","group_1"]].head())
+
+#Output
+#people_id  activity_type  activity_id  group_1
+#0      100.0             76    1734928.0    17304
+#1      100.0             1    2434093.0    17304
+#2      100.0             1    3404049.0    17304
+#3      100.0             1    3651215.0    17304
+#4      100.0             1    4109017.0    17304
 #----------------------------------------------------------------------------------------------------------------
 
 #----------------------------------------------------------------------------------------------------------------
