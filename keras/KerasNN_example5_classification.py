@@ -257,10 +257,46 @@ print(df_new[["people_id","activity_type","activity_id","group_1"]].head())
 #----------------------------------------------------------------------------------------------------------------
 
 #----------------------------------------------------------------------------------------------------------------
+#let’s convert the remaining categorical columns, which have relatively low numbers of distinct values, 
+#to one-hot encoded form and render the final consolidated dataset.
 
+
+#Define a function that will intake the raw dataframe and the column name and return a one hot encoded dataFrame
+def create_ohe(df_new, col):
+    le = LabelEncoder()
+    a=le.fit_transform(df_new[col]).reshape(-1,1)
+    ohe = OneHotEncoder(sparse=False)
+    column_names = [col+ "_"+ str(i) for i in le.classes_]
+    return (pd.DataFrame(ohe.fit_transform(a),columns =column_names))
+    
+#Since the above function converts the column, one at a time we create a loop to create the final dataset 
+#with all features
+
+target = ["outcome"]
+
+numeric_columns = list(set(temp.index[(temp.DataType =="float64") | (temp.DataType =="int64")].values) - set(target))
+
+categorical_columns = temp.index[temp["DataType"] == 'O'].values
+
+#Check the number of distinct values in each categorical column
+for column in categorical_columns:
+    print(column+" column has :",str(len(df_new[column].unique()))+" distinct values")
+   
+    
+temp2 = df_new[numeric_columns]
+
+for column in categorical_columns:
+    temp_df = create_ohe(df_new,column)
+    temp2 = pd.concat([temp2,temp_df],axis=1)
+    
+print("\nShape of final df after onehot encoding:",temp2.shape)
+
+#Output
+#Shape of final df after onehot encoding: (2197291, 183)
 #----------------------------------------------------------------------------------------------------------------
 
 #----------------------------------------------------------------------------------------------------------------
+
 
 #----------------------------------------------------------------------------------------------------------------
 
