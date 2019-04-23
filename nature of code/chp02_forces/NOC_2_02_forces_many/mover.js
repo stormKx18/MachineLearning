@@ -18,7 +18,7 @@ class Mover {
   update() {
     this.velocity.add(this.acceleration);
     this.position.add(this.velocity);
-    this.acceleration.mult(0);
+    this.acceleration.mult(0); //Clear acceleration after each update
   }
 
   display() {
