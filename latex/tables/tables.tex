@@ -1,0 +1,80 @@
+\documentclass{article}
+
+\usepackage[margin=2.54 cm]{geometry}
+
+\title{Tables, Floats and the Tabular Environment}
+\author{Chris Jaime}
+\date{}
+
+
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+Let's learn to make tables.
+
+\subsection{Tabular Environment}
+
+This is the tabular environment for the table shown in Table~\ref{tab:grades}.
+
+\vspace{0.5cm} %Add some vertical space
+
+\noindent Left aligned
+\begin{tabular}{ll} %Two columns with letter l(left aligned)
+Name & Your name here \\
+Subject & Writing with \LaTeX \\
+Grade & A+ \\
+\end{tabular}
+
+\vspace{0.5cm} %Add some vertical space
+
+\noindent Center aligned
+\begin{tabular}{cc} %Two columns with letter c(center aligned)
+Name & Your name here \\
+Subject & Writing with \LaTeX \\
+Grade & A+ \\
+\end{tabular}
+
+\vspace{0.5cm} %Add some vertical space
+
+\noindent With bars
+%With bars
+\begin{tabular}{|l|l|} %Two columns with letter l(left aligned)
+\hline
+Name & Your name here \\
+\hline
+Subject & Writing with \LaTeX \\
+\hline
+Grade & A+ \\
+\hline
+\end{tabular}
+
+\subsection{Floats: Table}
+\begin{table}[htbp] %htbp means table location here, top, bottom, separate page
+\caption{My Gradebook}
+\begin{center} %Center element
+
+	\begin{tabular}{|c|l|} %Two columns with letter l(left aligned)
+	\hline
+	Name & Your name here \\
+	\hline
+	Subject & Writing with \LaTeX \\
+	\hline
+	Grade & A+ \\
+	\hline
+	\end{tabular}
+
+\end{center}
+\label{tab:grades} %Add a label to the element
+\end{table}
+
+\subsection{References}
+You can see my grades in Table~\ref{tab:grades}.
+
+\section{Conclusion}
+Now I know how to create basic tables.
+
+\end{document}
+
