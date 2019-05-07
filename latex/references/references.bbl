@@ -1,0 +1,17 @@
+\begin{thebibliography}{1}
+
+\bibitem{latex}
+Latex - a document preparation system.
+\newblock http://www.latex-project.org/.
+
+\bibitem{hall2013}
+Bill Hall, James Jones, and Mark Todd.
+\newblock A good article.
+\newblock {\em Computer}, 280(10):100--120, 2013.
+
+\bibitem{smith2012}
+Tom Smith.
+\newblock {\em A super book}.
+\newblock PubCo, 2012.
+
+\end{thebibliography}

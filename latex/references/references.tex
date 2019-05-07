@@ -1,0 +1,34 @@
+\documentclass{article}
+
+\usepackage[margin=2.54 cm]{geometry}
+
+%Make hyperlinks package
+\usepackage{hyperref}
+
+\title{An article with citations}
+\author{Chris Jaime}
+\date{}
+
+
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+This article is about citations. I read a good book~\cite{smith2012}.
+I read a good article~\cite{hall2013}. I like to use \LaTeX~\cite{latex}.
+
+\subsection{Hyperlinks}
+Grapicx: \url{http://www.ctan.org/pkg/graphicx}
+
+\section{References}
+\bibliographystyle{plain}
+\bibliography{referencesMaster} %Point to bib file
+%bib file must be compiled also using bibtex --> just press F11 several times and then F1
+
+\section{Conclusion}
+This was how references are done.
+
+\end{document}
+
