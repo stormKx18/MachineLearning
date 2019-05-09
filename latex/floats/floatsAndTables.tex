@@ -5,6 +5,14 @@
 
 \usepackage{multirow}
 
+%Package for graphics
+\usepackage{graphicx}
+
+%Specify graphics folder
+\graphicspath{{graphics/}}
+
+\usepackage{caption, subcaption}
+
 \title{More on Tables and Graphics}
 \author{Chris Jaime}
 \date{}
@@ -59,9 +67,36 @@ Table~\ref{tab:multi} used row and column span.
 \label{tab:multi}
 \end{table}
 
-\subsection{}
+\subsection{More on graphics}
+Both of my graphics are in the graphics folder for the subfigures,
+Figure~\ref{fig:paper} and Figure~\ref{fig:page} in Figure~\ref{fig:subs}.
+
+%Code for figure
+\begin{figure}[htbp]
+\centering % Similar to -> \begin{center}
+
+%Subfigure 1
+\begin{subfigure}[b]{0.2\textwidth}
+	\centering
+	\includegraphics[scale=0.5]{Paper.png}
+	\caption{Beginning}
+	\label{fig:paper}	
+\end{subfigure}% 
+\begin{subfigure}[b]{0.2\textwidth}
+	\centering
+	\includegraphics[scale=0.5]{Page.png}
+	\caption{End}
+	\label{fig:page}	
+\end{subfigure}% 
+
+\caption{The process}
+\label{fig:subs}
+
+\end{figure}
+
 
 \section{Conclusion}
+Now I know more of table and graphics.
 
 \end{document}
 
