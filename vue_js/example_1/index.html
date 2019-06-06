@@ -1,0 +1,27 @@
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+<div id="app">
+
+  <h1 v-once>{{title}}</h1><!-- Only render once -->
+  <input type="text" v-on:input="changeTitle">
+  <h1 >{{title}}</h1><!-- Render continuosly -->
+  <p>{{sayHello()}} - <a v-bind:href="link">Google</a></p><!--Bind data -->
+  <hr>
+  <p v-html="finishedLink"></p>  <!-- Render HTML code -->
+  <hr>
+
+  <button v-on:click="increase(2, $event)">Click me</button><!-- Add listener - click -->
+    <button v-on:click="counter++">Click me</button><!-- Add listener - click -->
+  <p>{{counter * 2}}</p>
+  <p v-on:mousemove="updateCoordinates">
+    Coordinates: {{x}} / {{y}}
+    - <span v-on:mousemove.stop=""> DEAD SPOT</span>
+  </p> <!-- Add listener - hover-->
+
+  <input type="text" v-on:keyup.enter="alertMe">
+
+</div>
+
+<!-- Call vue js file at the end -->
+<script type="text/javascript" src="main.js"></script>

@@ -1,0 +1,49 @@
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+<head>
+   <link rel="stylesheet" type="text/css" href="theme.css">
+</head>
+
+<div id="app">
+
+  <!-- Calla function to determine class -->
+  <div
+    class="demo"
+    @click="attachRed= !attachRed"
+    :class="divClasses"
+  ></div>
+
+<!-- Use javascript to determine class -->
+  <div class="demo"
+  :class="{red: attachRed}"
+  ></div>
+
+<!-- Use property to termine class-->
+  <div class="demo"
+  :class="color"
+  ></div>
+
+  <!-- Use CSS directly -->
+  <div class="demo"
+  :style="{backgroundColor: color}"
+  ></div>
+
+  <!-- Use CSS with a function -->
+  <div class="demo"
+  :style="myStyle"
+  ></div>
+
+  <!-- Use CSS array -->
+  <div class="demo"
+  :style="[myStyle, {height: width + 'px'}]"
+  ></div>
+
+  <hr>
+  <input type="text" v-model="color">
+  <input type="text" v-model="width">
+</div>
+
+<!-- Call vue js file at the end -->
+<script type="text/javascript" src="main.js"></script>

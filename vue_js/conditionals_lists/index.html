@@ -1,0 +1,24 @@
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+<div id="app">
+  <!-- Show hide an element by dettaching-->
+  <p v-if="show">You can see me!</p>
+  <p v-else>Now you see me!</p>
+  <p>Do you also see me?</p>
+
+<!-- Show hide a section by dettaching-->
+  <template v-if="show">
+    <h1>Hi</h1>
+    <p>Inside a template</p>
+  </template>
+
+  <!-- Show hide an element without dettaching-->
+  <p v-show="show">Do you also see me????</p>
+
+  <button @click="show= !show">Switch</button>
+
+</div>
+
+<!-- Call vue js file at the end -->
+<script type="text/javascript" src="main.js"></script>
